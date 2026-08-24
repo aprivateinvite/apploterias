@@ -19,6 +19,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: ☕ Configurar Java 17 (Necessário para Android)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: 📦 Instalar Dependências e Flet
         run: |
           python -m pip install --upgrade pip
