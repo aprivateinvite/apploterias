@@ -34,7 +34,7 @@ def main(page: ft.Page):
 
     # Componentes UI
     header = ft.Container(
-        content=ft.Text("App Loterias", size=28, weight=ft.FontWeight.BOLD, color=ft.colors.WHITE),
+        content=ft.Text("App Loterias", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
         bgcolor=COR_CABECALHO,
         padding=20,
         border_radius=10,
@@ -118,7 +118,7 @@ def main(page: ft.Page):
                 for d in dezenas:
                     linha_dezenas.controls.append(
                         ft.Container(
-                            content=ft.Text(d, color=ft.colors.WHITE, weight=ft.FontWeight.BOLD),
+                            content=ft.Text(d, color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD),
                             bgcolor=COR_DEZENAS,
                             shape=ft.BoxShape.CIRCLE,
                             padding=10,
@@ -135,7 +135,7 @@ def main(page: ft.Page):
                     for t in trevos:
                         linha_trevos.controls.append(
                             ft.Container(
-                                content=ft.Text(t, color=ft.colors.WHITE, weight=ft.FontWeight.BOLD),
+                                content=ft.Text(t, color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD),
                                 bgcolor=COR_TREVOS,
                                 shape=ft.BoxShape.CIRCLE,
                                 padding=10,
@@ -153,7 +153,7 @@ def main(page: ft.Page):
                     ]),
                     padding=15,
                     border_radius=10,
-                    border=ft.border.all(1, ft.colors.WHITE24)
+                    border=ft.border.all(1, ft.Colors.WHITE24)
                 )
                 
                 container_resultados.controls.append(cartao)
@@ -196,7 +196,7 @@ def main(page: ft.Page):
 
     btn_gerar = ft.ElevatedButton(
         "🎲 Gerar Combinações",
-        color=ft.colors.WHITE,
+        color=ft.Colors.WHITE,
         bgcolor=COR_BOTAO_GERAR,
         width=float('inf'),
         height=50,
@@ -205,8 +205,8 @@ def main(page: ft.Page):
     
     btn_exportar = ft.ElevatedButton(
         "💾 Exportar Resultados",
-        color=ft.colors.WHITE,
-        bgcolor=ft.colors.BLUE_700,
+        color=ft.Colors.WHITE,
+        bgcolor=ft.Colors.BLUE_700,
         width=float('inf'),
         height=50,
         on_click=btn_exportar_click
@@ -214,13 +214,13 @@ def main(page: ft.Page):
 
     page.add(
         header,
-        ft.Divider(height=20, color=ft.colors.TRANSPARENT),
+        ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
         dropdown_modalidade,
         switch_quentes,
         txt_quantidade,
         btn_gerar,
         btn_exportar,
-        ft.Divider(height=20, color=ft.colors.WHITE24),
+        ft.Divider(height=20, color=ft.Colors.WHITE24),
         container_resultados
     )
 
