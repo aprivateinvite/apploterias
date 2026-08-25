@@ -63,7 +63,7 @@ def main(page: ft.Page):
         ],
         value="megasena",
         width=float('inf'),
-        on_change=on_modalidade_change
+        on_select=on_modalidade_change
     )
 
     dropdown_tamanho = ft.Dropdown(
