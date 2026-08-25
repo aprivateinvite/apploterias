@@ -4,7 +4,7 @@ import datetime
 import asyncio
 from database import init_db, salvar_historico_usuario
 from api_service import atualizar_dados
-from estatisticas import gerar_combinacoes
+from estatisticas import gerar_combinacoes, REGRAS
 
 def main(page: ft.Page):
     # Inicializa banco de dados
@@ -42,6 +42,18 @@ def main(page: ft.Page):
         width=float('inf')
     )
 
+    def on_modalidade_change(e):
+        mod = dropdown_modalidade.value
+        regra = REGRAS[mod]
+        min_d = regra['min_dezenas']
+        max_d = regra['max_dezenas']
+        
+        dropdown_tamanho.options = [
+            ft.dropdown.Option(key=str(i), text=f"{i} dezenas") for i in range(min_d, max_d + 1)
+        ]
+        dropdown_tamanho.value = str(min_d)
+        page.update()
+
     dropdown_modalidade = ft.Dropdown(
         label="Escolha a Loteria",
         options=[
@@ -50,6 +62,22 @@ def main(page: ft.Page):
             ft.dropdown.Option(key="maismilionaria", text="Mais Milionária"),
         ],
         value="megasena",
+        width=float('inf'),
+        on_change=on_modalidade_change
+    )
+
+    dropdown_tamanho = ft.Dropdown(
+        label="Tamanho da Aposta",
+        options=[
+            ft.dropdown.Option(key=str(i), text=f"{i} dezenas") for i in range(6, 21)
+        ],
+        value="6",
+        width=float('inf')
+    )
+
+    txt_dezenas_fixas = ft.TextField(
+        label="Dezenas Fixas (opcional, separadas por vírgula)",
+        hint_text="Ex: 4, 15, 33",
         width=float('inf')
     )
 
@@ -72,6 +100,31 @@ def main(page: ft.Page):
     async def btn_gerar_click(e):
         modalidade = dropdown_modalidade.value
         usar_quentes = switch_quentes.value
+        tamanho_aposta = int(dropdown_tamanho.value)
+        
+        dezenas_fixas_str = txt_dezenas_fixas.value.strip() if txt_dezenas_fixas.value else ""
+        dezenas_fixas = []
+        if dezenas_fixas_str:
+            try:
+                parts = [p.strip() for p in dezenas_fixas_str.split(',') if p.strip()]
+                dezenas_fixas = [int(p) for p in parts]
+                
+                regra = REGRAS[modalidade]
+                for d in dezenas_fixas:
+                    if d < 1 or d > regra['total_dezenas']:
+                        mostrar_snack(f"A dezena {d} é inválida para a loteria escolhida.")
+                        return
+                
+                if len(set(dezenas_fixas)) != len(dezenas_fixas):
+                    mostrar_snack("Existem dezenas fixas duplicadas.")
+                    return
+                
+                if len(dezenas_fixas) > tamanho_aposta:
+                    mostrar_snack(f"Você escolheu {len(dezenas_fixas)} dezenas fixas, mas o tamanho da aposta é {tamanho_aposta}.")
+                    return
+            except ValueError:
+                mostrar_snack("Formato inválido nas dezenas fixas. Use apenas números separados por vírgula.")
+                return
         
         try:
             qtd = int(txt_quantidade.value)
@@ -92,8 +145,7 @@ def main(page: ft.Page):
             await atualizar_dados(modalidade)
             
             # Gera as combinações
-            # Isso poderia ser assíncrono caso fosse lento, mas random é muito rápido
-            resultados = gerar_combinacoes(modalidade, qtd, usar_quentes)
+            resultados = gerar_combinacoes(modalidade, qtd, usar_quentes, dezenas_fixas, tamanho_aposta)
             
             container_resultados.controls.clear()
             
@@ -153,7 +205,7 @@ def main(page: ft.Page):
                     ]),
                     padding=15,
                     border_radius=10,
-                    border=ft.border.all(1, ft.Colors.WHITE24)
+                    border=ft.Border.all(1, ft.Colors.WHITE24)
                 )
                 
                 container_resultados.controls.append(cartao)
@@ -214,6 +266,8 @@ def main(page: ft.Page):
         header,
         ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
         dropdown_modalidade,
+        dropdown_tamanho,
+        txt_dezenas_fixas,
         switch_quentes,
         txt_quantidade,
         btn_gerar,

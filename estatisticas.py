@@ -2,9 +2,9 @@ import random
 from database import buscar_sorteios
 
 REGRAS = {
-    'megasena': {'total_dezenas': 60, 'sorteio': 6, 'trevos': 0},
-    'lotofacil': {'total_dezenas': 25, 'sorteio': 15, 'trevos': 0},
-    'maismilionaria': {'total_dezenas': 50, 'sorteio': 6, 'trevos': 2, 'total_trevos': 6}
+    'megasena': {'total_dezenas': 60, 'sorteio': 6, 'min_dezenas': 6, 'max_dezenas': 20, 'trevos': 0},
+    'lotofacil': {'total_dezenas': 25, 'sorteio': 15, 'min_dezenas': 15, 'max_dezenas': 20, 'trevos': 0},
+    'maismilionaria': {'total_dezenas': 50, 'sorteio': 6, 'min_dezenas': 6, 'max_dezenas': 12, 'trevos': 2, 'total_trevos': 6}
 }
 
 def calcular_frequencias(modalidade: str):
@@ -24,30 +24,35 @@ def calcular_frequencias(modalidade: str):
             
     return frequencia_dezenas, frequencia_trevos
 
-def gerar_combinacoes(modalidade: str, quantidade: int, usar_quentes: bool):
+def gerar_combinacoes(modalidade: str, quantidade: int, usar_quentes: bool, dezenas_fixas: list = None, tamanho_aposta: int = None):
     regra = REGRAS[modalidade]
     resultados = []
+    
+    dezenas_fixas = dezenas_fixas or []
+    tamanho_aposta = tamanho_aposta or regra['sorteio']
     
     frequencia_dezenas, frequencia_trevos = {}, {}
     if usar_quentes:
         frequencia_dezenas, frequencia_trevos = calcular_frequencias(modalidade)
     
     for _ in range(quantidade):
-        combinacao = []
+        combinacao = dezenas_fixas.copy()
         trevos = []
         
         # Gerar dezenas
-        populacao_dezenas = list(range(1, regra['total_dezenas'] + 1))
+        populacao_dezenas = [n for n in range(1, regra['total_dezenas'] + 1) if n not in combinacao]
         
         if usar_quentes and frequencia_dezenas:
             pesos = [frequencia_dezenas.get(n, 1) for n in populacao_dezenas]
-            while len(combinacao) < regra['sorteio']:
+            while len(combinacao) < tamanho_aposta:
                 # random.choices retorna com reposição, precisamos sem reposição
                 escolhido = random.choices(populacao_dezenas, weights=pesos, k=1)[0]
                 if escolhido not in combinacao:
                     combinacao.append(escolhido)
         else:
-            combinacao = random.sample(populacao_dezenas, regra['sorteio'])
+            faltam = tamanho_aposta - len(combinacao)
+            if faltam > 0:
+                combinacao.extend(random.sample(populacao_dezenas, faltam))
             
         combinacao.sort()
         
