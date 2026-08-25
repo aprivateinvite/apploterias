@@ -72,7 +72,8 @@ def main(page: ft.Page):
             ft.dropdown.Option(key=str(i), text=f"{i} dezenas") for i in range(6, 21)
         ],
         value="6",
-        width=float('inf')
+        width=float('inf'),
+        menu_height=200
     )
 
     txt_dezenas_fixas = ft.TextField(
