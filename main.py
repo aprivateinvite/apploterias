@@ -38,7 +38,7 @@ def main(page: ft.Page):
         bgcolor=COR_CABECALHO,
         padding=20,
         border_radius=10,
-        alignment=ft.alignment.CENTER,
+        alignment=ft.Alignment.CENTER,
         width=float('inf')
     )
 
@@ -124,7 +124,7 @@ def main(page: ft.Page):
                             padding=10,
                             width=40,
                             height=40,
-                            alignment=ft.alignment.CENTER
+                            alignment=ft.Alignment.CENTER
                         )
                     )
                     
@@ -141,7 +141,7 @@ def main(page: ft.Page):
                                 padding=10,
                                 width=40,
                                 height=40,
-                                alignment=ft.alignment.CENTER
+                                alignment=ft.Alignment.CENTER
                             )
                         )
                 
