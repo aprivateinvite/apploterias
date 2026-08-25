@@ -65,8 +65,8 @@ def main(page: ft.Page):
     container_resultados = ft.Column(spacing=10, width=float('inf'))
 
     def mostrar_snack(mensagem: str):
-        page.snack_bar = ft.SnackBar(ft.Text(mensagem))
-        page.snack_bar.open = True
+        snack = ft.SnackBar(content=ft.Text(mensagem), open=True)
+        page.overlay.append(snack)
         page.update()
 
     async def btn_gerar_click(e):
@@ -173,10 +173,8 @@ def main(page: ft.Page):
         try:
             # Obtém caminho de storage do app (seguro no mobile)
             # Em desktop ele irá para a pasta temporária ou de dados do usuário dependendo do SO
-            path = page.get_storage_path()
-            if not path:
-                # Fallback em caso de erro no desktop puro
-                path = os.getcwd()
+            import tempfile
+            path = tempfile.gettempdir()
                 
             arquivo_path = os.path.join(path, "minhas_combinacoes.txt")
             

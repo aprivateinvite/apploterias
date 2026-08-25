@@ -2,7 +2,9 @@ import sqlite3
 import json
 import os
 
-DB_PATH = 'loterias.db'
+import tempfile
+
+DB_PATH = os.path.join(tempfile.gettempdir(), 'loterias.db')
 
 def get_connection():
     return sqlite3.connect(DB_PATH)
