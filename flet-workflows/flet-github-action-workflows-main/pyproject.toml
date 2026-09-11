@@ -1,0 +1,29 @@
+[project]
+name = "flet-gha-example"
+version = "0.1.0"   # Build Version. Update for each new release of your app.
+description = "A simple Flet app, built by GitHub Actions."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "TheEthicalBoy", email = "me@ethicalboy.com" }
+]
+dependencies = [
+    "flet==0.80.6.dev7664"
+]
+
+[dependency-groups]
+dev = [
+    "flet[all]==0.80.6.dev7664",
+]
+
+# Docs: https://docs.flet.dev/publish
+
+[tool.flet]
+build_number = 1
+product = "Flet GHA Example"
+
+[tool.flet.app]
+path = "src"
+
+[tool.flet.flutter.pubspec.dependency_overrides]
+flet = { git = { url = "https://github.com/flet-dev/flet.git", ref = "main", path = "packages/flet" } }
